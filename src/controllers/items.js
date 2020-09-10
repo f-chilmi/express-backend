@@ -1,7 +1,6 @@
-const db = require('../helpers/db')
 const qs = require('querystring')
 const { getItemModel, createItemModel, updateItemModel, updatePartialModel, deleteItemModel, getItemModelByCondition, getInfoItemsModel } = require('../models/items')
-const { count } = require('console')
+// const { count } = require('console')
 
 module.exports = {
   getDetailItem: (req, res) => {
