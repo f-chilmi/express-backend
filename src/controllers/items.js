@@ -1,5 +1,5 @@
 const qs = require('querystring')
-const { getItemModel, createItemModel, updateItemModel, updatePartialModel, deleteItemModel, getItemModelByCondition, getInfoItemsModel } = require('../models/items')
+const { getItemModel, createItemModel, updateItemModel, updatePartialModel, deleteItemModel, getItemModelByCondition, getInfoItemsModel, getItemsWithCategoryModel } = require('../models/items')
 // const { count } = require('console')
 
 module.exports = {
@@ -33,7 +33,7 @@ module.exports = {
     } else {
       res.status(400).send({
         success: false,
-        message: 'All field must be filled'
+        message: 'All field(name, price, category, description) must be filled'
       })
     }
   },
@@ -123,17 +123,25 @@ module.exports = {
     })
   },
   showAllItems: (req, res) => {
-    let { page, limit, search } = req.query
-    // console.log(req.query)
-    let searchKey = ''
+    let { page, limit, search, sort } = req.query
+    const searchKey = 'name'
     let searchValue = ''
+    let sortKey = ''
+    let sortValue = ''
     if (typeof search === 'object') {
-      searchKey = Object.keys(search)[0]
       searchValue = Object.values(search)[0]
     } else {
-      searchKey = 'name'
-      searchValue = ''
+      searchValue = search || ''
     }
+
+    if (typeof sort === 'object') {
+      sortKey = Object.keys(sort)[0]
+      sortValue = Object.values(sort)[0]
+    } else {
+      sortKey = 'id'
+      sortValue = 'ASC'
+    }
+
     if (!limit) {
       limit = 5
     } else {
@@ -145,7 +153,7 @@ module.exports = {
       page = parseInt(page)
     }
     const offset = (page - 1) * limit
-    getItemModelByCondition(searchKey, searchValue, limit, offset, result => {
+    getItemModelByCondition(searchKey, searchValue, sortKey, sortValue, limit, offset, result => {
       const pageInfo = {
         count: 0,
         pages: 1,
@@ -173,26 +181,6 @@ module.exports = {
             pageInfo
           })
         })
-        // const query = `SELECT COUNT(*) AS count FROM items WHERE ${searchKey} LIKE '%${searchValue}%'`
-        // db.query(query, (_err, data, field) => {
-        //   console.log(query)
-        //   const { count } = data[0]
-        //   pageInfo.count = count
-        //   pageInfo.pages = Math.ceil(count / limit)
-        //   const { pages, currentPage } = pageInfo
-        //   if (currentPage < pages) {
-        //     pageInfo.nextLink = `http://localhost:8080/?${qs.stringify({ ...req.query, ...{ page: page + 1 } })}`
-        //   }
-        //   if (currentPage > 1) {
-        //     pageInfo.prevLink = `http://localhost:8080/?${qs.stringify({ ...req.query, ...{ page: page - 1 } })}`
-        //   }
-        //   res.send({
-        //     success: true,
-        //     message: 'List of items',
-        //     data: result,
-        //     pageInfo
-        //   })
-        // })
       } else {
         res.send({
           success: true,
@@ -200,6 +188,25 @@ module.exports = {
           pageInfo
         })
       }
+    })
+  },
+  showItemsWithCategory: (req, res) => {
+    const { sort } = req.query
+    let sortKey = ''
+    let sortValue = ''
+    if (typeof sort === 'object') {
+      sortKey = Object.keys(sort)[0]
+      sortValue = Object.values(sort)[0]
+    } else {
+      sortKey = 'id'
+      sortValue = 'ASC'
+    }
+    console.log(sortKey, sortValue)
+    getItemsWithCategoryModel(sortKey, sortValue, result => {
+      res.send({
+        success: true,
+        data: result
+      })
     })
   }
 }

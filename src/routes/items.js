@@ -5,10 +5,12 @@ const { createItem } = require('../controllers/items')
 const { changeItem } = require('../controllers/items')
 const { updatePartial } = require('../controllers/items')
 const { deleteItem } = require('../controllers/items')
+const { showItemsWithCategory } = require('../controllers/items')
 
 const router = Router()
 
 router.get('/', showAllItems)
+router.get('/category', showItemsWithCategory)
 router.get('/:id', getDetailItem)
 router.post('/', createItem)
 router.put('/:id', changeItem)
