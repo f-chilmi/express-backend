@@ -1,11 +1,11 @@
 const qs = require('querystring')
-const { getItemModel, createItemModel, updateItemModel, updatePartialModel, deleteItemModel, getItemModelByCondition, getInfoItemsModel, getItemsWithCategoryModel } = require('../models/items')
+const { getItemModel, createItemModel, updateItemModel, updatePartialModel, deleteItemModel, getItemModelByCondition, getInfoItemsModel, getItemsWithCategoryModel, getItem2Model } = require('../models/items')
 // const { count } = require('console')
 
 module.exports = {
   getDetailItem: (req, res) => {
     const { id } = req.params
-    getItemModel(id, result => {
+    getItem2Model(id, result => {
       if (result.length) {
         res.send({
           success: true,
@@ -21,9 +21,10 @@ module.exports = {
     })
   },
   createItem: (req, res) => {
-    const { name, price, description } = req.body
-    if (name && price && description) {
-      createItemModel([name, price, description], result => {
+    const { name, price, category, description } = req.body
+    if (name && price && category && description) {
+      createItemModel([name, price, category, description], result => {
+        console.log(req.body)
         res.status(201).send({
           success: true,
           message: 'Item has been created',
@@ -39,12 +40,12 @@ module.exports = {
   },
   changeItem: (req, res) => {
     const { id } = req.params
-    const { name, price, description } = req.body
-    console.log(name, price, description)
-    if (name.trim() && price.trim() && description.trim()) {
+    const { name, price, description, category } = req.body
+    console.log(name, price, description, category)
+    if (name.trim() && price && description && category) {
       getItemModel(id, result => {
         if (result.length) {
-          updateItemModel(id, [name, price, description], result => {
+          updateItemModel(id, [name.trim(), price, description.trim(), category], result => {
             if (result.affectedRows) {
               res.send({
                 success: true,
@@ -67,14 +68,14 @@ module.exports = {
     } else {
       res.status(400).send({
         success: false,
-        message: 'All field must be filled'
+        message: 'All field (name, price, category and description) must be filled!'
       })
     }
   },
   updatePartial: (req, res) => {
     const { id } = req.params
-    const { name, price, description } = req.body
-    if (name.trim() || price.trim() || description.trim()) {
+    const { name, price, description, category_id } = req.body
+    if (name.trim() || price.trim() || description.trim() || category_id.trim()) {
       getItemModel(id, result => {
         if (result.length) {
           const data = Object.entries(req.body).map(item => {
@@ -139,7 +140,7 @@ module.exports = {
       sortValue = Object.values(sort)[0]
     } else {
       sortKey = 'id'
-      sortValue = 'ASC'
+      sortValue = sort || ''
     }
 
     if (!limit) {
@@ -191,9 +192,16 @@ module.exports = {
     })
   },
   showItemsWithCategory: (req, res) => {
-    const { sort } = req.query
+    const { search, sort } = req.query
+    const searchKey = 'category'
+    let searchValue = ''
     let sortKey = ''
     let sortValue = ''
+    if (typeof search === 'object') {
+      searchValue = Object.values(search)[0]
+    } else {
+      searchValue = search || ''
+    }
     if (typeof sort === 'object') {
       sortKey = Object.keys(sort)[0]
       sortValue = Object.values(sort)[0]
@@ -202,7 +210,7 @@ module.exports = {
       sortValue = 'ASC'
     }
     console.log(sortKey, sortValue)
-    getItemsWithCategoryModel(sortKey, sortValue, result => {
+    getItemsWithCategoryModel(searchKey, searchValue, sortKey, sortValue, result => {
       res.send({
         success: true,
         data: result
