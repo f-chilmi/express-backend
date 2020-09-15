@@ -1,20 +1,31 @@
-// const qs = require('querystring')
-// const { getCategoryModel } = require('../models/category')
-const db = require('../helpers/db')
+const { getItemsWithCategoryModel } = require('../models/category')
 
 module.exports = {
-  showItemsByCategory: (req, res) => {
-    db.query('SELECT * FROM items', (err, result, _field) => {
-      if (!err) {
-        console.log(result)
-        res.send({
-          success: true,
-          data: result
-        })
-      } else {
-        res.send('error')
-        console.log(err)
-      }
+  showItemsWithCategory: (req, res) => {
+    const { search, sort } = req.query
+    const searchKey = 'category'
+    let searchValue = ''
+    let sortKey = ''
+    let sortValue = ''
+    if (typeof search === 'object') {
+      searchValue = Object.values(search)[0]
+    } else {
+      searchValue = search || ''
+    }
+    if (typeof sort === 'object') {
+      sortKey = Object.keys(sort)[0]
+      sortValue = Object.values(sort)[0]
+    } else {
+      sortKey = 'id'
+      sortValue = 'ASC'
+    }
+    console.log(sortKey, sortValue)
+
+    getItemsWithCategoryModel(searchKey, searchValue, sortKey, sortValue, result => {
+      res.send({
+        success: true,
+        data: result
+      })
     })
   }
 }

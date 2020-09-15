@@ -10,7 +10,7 @@ module.exports = {
   },
   showCartListModel: (cb) => {
     db.query(`SELECT ${table2}.id, ${table1}.name, ${table1}.price, ${table2}.quantity FROM ${table1} INNER JOIN ${table2} ON ${table1}.id = ${table2}.items_id`, (_err, result, field) => {
-      cb(result)
+      cb(result, _err)
     })
   },
   updateQtyModel: (id, qty, cb) => {

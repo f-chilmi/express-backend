@@ -1,12 +1,11 @@
 const db = require('../helpers/db')
-const table1 = 'items'
+const table = 'items'
 const table2 = 'category'
 
 module.exports = {
-  getCategoryModel: (cb) => {
-    db.query(`SELECT ${table1}.name, ${table1}.category_id, ${table1}.price, ${table1}.description, ${table2}.id, ${table2}.name FROM ${table1} INNER JOIN ${table2} ON ${table1}.category_id = ${table2}.id`, (_err, result, _field) => {
-      cb(_err, result)
-      console.log(_err)
+  getItemsWithCategoryModel: (searchkey, searchValue, sortKey, sortValue, cb) => {
+    db.query(`SELECT ${table}.id, ${table}.name, ${table}.price, ${table2}.category, ${table}.description FROM ${table} LEFT JOIN ${table2} ON ${table}.category_id = ${table2}.id WHERE ${searchkey} LIKE '%${searchValue}%' ORDER BY ${sortKey} ${sortValue}`, (_err, result, field) => {
+      cb(result)
     })
   }
 }

@@ -1,5 +1,4 @@
 const db = require('../helpers/db')
-// const { count } = require('console')
 const table = 'items'
 const table2 = 'category'
 
@@ -45,11 +44,6 @@ module.exports = {
   getInfoItemsModel: (obj1, obj2, cb) => {
     db.query(`SELECT COUNT(*) AS count FROM ${table} WHERE ${obj1} LIKE '%${obj2}%'`, (_err, data, _field) => {
       cb(data)
-    })
-  },
-  getItemsWithCategoryModel: (searchkey, searchValue, sortKey, sortValue, cb) => {
-    db.query(`SELECT ${table}.id, ${table}.name, ${table}.price, ${table2}.category, ${table}.description FROM ${table} LEFT JOIN ${table2} ON ${table}.category_id = ${table2}.id WHERE ${searchkey} LIKE '%${searchValue}%' ORDER BY ${sortKey} ${sortValue}`, (_err, result, field) => {
-      cb(result)
     })
   }
 }
