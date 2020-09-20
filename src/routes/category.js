@@ -4,6 +4,6 @@ const { showItemsWithCategory } = require('../controllers/category')
 
 const router = Router()
 
-router.get('/category', showItemsWithCategory)
+router.get('/', showItemsWithCategory)
 
 module.exports = router

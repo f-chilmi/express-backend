@@ -9,7 +9,7 @@ module.exports = {
         res.send({
           success: true,
           message: 'detail item',
-          data: result
+          data: result[0]
         })
       } else {
         res.send({
