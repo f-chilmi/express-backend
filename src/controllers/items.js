@@ -21,6 +21,7 @@ module.exports = {
   },
   createItem: (req, res) => {
     const { name, price, category, description } = req.body
+    console.log(req.file)
     if (name && price && category && description) {
       createItemModel([name, price, category, description], result => {
         console.log(req.body)
