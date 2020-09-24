@@ -1,5 +1,17 @@
 const qs = require('querystring')
-const { getItemModel, createItemModel, updateItemModel, updatePartialModel, deleteItemModel, getItemModelByCondition, getInfoItemsModel, getItem2Model, addPictureModel, updatePictureModel, getPictureByIdModel } = require('../models/items')
+const {
+  getItemModel,
+  createItemModel,
+  updateItemModel,
+  updatePartialModel,
+  deleteItemModel,
+  getItemModelByCondition,
+  getInfoItemsModel,
+  getItem2Model,
+  addPictureModel,
+  updatePictureModel,
+  getPictureByIdModel
+} = require('../models/items')
 
 module.exports = {
   getDetailItem: (req, res) => {
