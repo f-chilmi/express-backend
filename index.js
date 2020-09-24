@@ -10,7 +10,7 @@ const cartRouter = require('./src/routes/cart')
 const app = express()
 
 // import static files
-app.use('/upload', express.static('assets/uploads'))
+app.use('/uploads', express.static('assets/uploads'))
 
 // middleware
 app.use(bodyParser.urlencoded({ extended: false }))

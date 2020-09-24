@@ -1,5 +1,5 @@
 const qs = require('querystring')
-const { getItemModel, createItemModel, updateItemModel, updatePartialModel, deleteItemModel, getItemModelByCondition, getInfoItemsModel, getItem2Model } = require('../models/items')
+const { getItemModel, createItemModel, updateItemModel, updatePartialModel, deleteItemModel, getItemModelByCondition, getInfoItemsModel, getItem2Model, addPictureModel, updatePictureModel, getPictureByIdModel } = require('../models/items')
 
 module.exports = {
   getDetailItem: (req, res) => {
@@ -21,14 +21,22 @@ module.exports = {
   },
   createItem: (req, res) => {
     const { name, price, category, description } = req.body
-    console.log(req.file)
+    const { filename } = req.file
+    const urlPicture = `http://localhost:8080/uploads/${filename}`
     if (name && price && category && description) {
       createItemModel([name, price, category, description], result => {
-        console.log(req.body)
-        res.status(201).send({
-          success: true,
-          message: 'Item has been created',
-          data: req.body
+        const { insertId } = result
+        addPictureModel(insertId, urlPicture, result => {
+          console.log(result)
+          console.log(insertId)
+          res.status(201).send({
+            success: true,
+            message: 'Item has been created',
+            data: {
+              ...req.body,
+              urlPicture
+            }
+          })
         })
       })
     } else {
@@ -41,22 +49,46 @@ module.exports = {
   changeItem: (req, res) => {
     const { id } = req.params
     const { name, price, description, category } = req.body
-    console.log(name, price, description, category)
+    const { filename } = req.file
+    const urlPicture = `http://localhost:8080/uploads/${filename}`
     if (name.trim() && price && description && category) {
       getItemModel(id, result => {
         if (result.length) {
           updateItemModel(id, [name.trim(), price, description.trim(), category], result => {
-            if (result.affectedRows) {
-              res.send({
-                success: true,
-                message: `Item ${id} has been updated`
-              })
-            } else {
-              res.send({
-                success: false,
-                message: 'Failed update data'
-              })
-            }
+            const { affectedRows } = result
+            getPictureByIdModel(id, result => {
+              if (result.length) {
+                updatePictureModel(id, urlPicture, result => {
+                  console.log(result)
+                  if (affectedRows) {
+                    res.send({
+                      success: true,
+                      message: `Item ${id} has been updated`
+                    })
+                  } else {
+                    res.send({
+                      success: false,
+                      message: 'Failed update data'
+                    })
+                  }
+                })
+              } else {
+                addPictureModel(id, urlPicture, result => {
+                  console.log(result)
+                  if (affectedRows) {
+                    res.send({
+                      success: true,
+                      message: `Item ${id} has been updated`
+                    })
+                  } else {
+                    res.send({
+                      success: false,
+                      message: 'Failed update data'
+                    })
+                  }
+                })
+              }
+            })
           })
         } else {
           res.send({
@@ -75,25 +107,65 @@ module.exports = {
   updatePartial: (req, res) => {
     const { id } = req.params
     const { name, price, description, category_id } = req.body
-    if (name.trim() || price.trim() || description.trim() || category_id.trim()) {
+    if (name.trim() || price.trim() || description.trim() || category_id.trim() || urlPicture.trim()) {
       getItemModel(id, result => {
         if (result.length) {
           const data = Object.entries(req.body).map(item => {
             return parseInt(item[1]) > 0 ? `${item[0]}=${item[1]}` : `${item[0]}='${item[1]}'`
           })
-          console.log(data)
           updatePartialModel(id, data, result => {
-            if (result.affectedRows) {
-              res.send({
-                success: true,
-                message: `item ${id} has been updated`,
-                result: req.body
+            const { affectedRows } = result
+            if (req.file) {
+              const { filename } = req.file
+              const urlPicture = `http://localhost:8080/uploads/${filename}`
+              console.log(req.file)
+              console.log(filename)
+              console.log(urlPicture)
+              getPictureByIdModel(id, result => {
+                if (result.length) {
+                  updatePictureModel(id, urlPicture, result => {
+                    console.log(result)
+                    if (affectedRows) {
+                      res.send({
+                        success: true,
+                        message: `Item ${id} has been updated`
+                      })
+                    } else {
+                      res.send({
+                        success: false,
+                        message: 'Failed update data'
+                      })
+                    }
+                  })
+                } else {
+                  addPictureModel(id, urlPicture, result => {
+                    console.log(result)
+                    if (affectedRows) {
+                      res.send({
+                        success: true,
+                        message: `Item ${id} has been updated`
+                      })
+                    } else {
+                      res.send({
+                        success: false,
+                        message: 'Failed update data'
+                      })
+                    }
+                  })
+                }
               })
             } else {
-              res.send({
-                success: false,
-                message: 'Failed update data'
-              })
+              if (affectedRows) {
+                res.send({
+                  success: true,
+                  message: `Item ${id} has been updated`
+                })
+              } else {
+                res.send({
+                  success: false,
+                  message: 'Failed update data'
+                })
+              }
             }
           })
         } else {

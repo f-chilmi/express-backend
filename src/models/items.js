@@ -1,6 +1,7 @@
 const db = require('../helpers/db')
 const table = 'items'
 const table2 = 'category'
+const table3 = 'items_picture'
 
 module.exports = {
   getItemModel: (id, cb) => {
@@ -10,8 +11,8 @@ module.exports = {
     })
   },
   getItem2Model: (id, cb) => {
-    const query2 = `SELECT ${table}.id, ${table}.name, ${table}.price, ${table2}.category, ${table}.description FROM ${table} LEFT JOIN ${table2} ON ${table}.category_id = ${table2}.id WHERE ${table}.id = ${id}`
-    db.query(query2, (_err, result, field) => {
+    const query2 = `SELECT ${table}.id, ${table}.name, ${table}.price, ${table2}.category, ${table3}.picture, ${table}.description FROM ${table} LEFT JOIN ${table2} ON ${table}.category_id = ${table2}.id LEFT JOIN ${table3} ON ${table}.id = ${table3}.items_id WHERE ${table}.id = ${id}`
+    db.query(query2, (_err, result, _field) => {
       cb(result)
     })
   },
@@ -20,9 +21,23 @@ module.exports = {
       cb(result)
     })
   },
+  addPictureModel: (id, url, cb) => {
+    db.query(`INSERT INTO ${table3} (items_id, picture) VALUE (${id}, "${url}")`, (_err, result, _field) => {
+      cb(result)
+    })
+  },
   updateItemModel: (id, arr, cb) => {
     db.query(`UPDATE ${table} SET name="${arr[0]}", price=${arr[1]}, description="${arr[2]}", category_id=${arr[3]} WHERE id=${id}`, (_err, result, _field) => {
-      console.log(_err)
+      cb(result)
+    })
+  },
+  getPictureByIdModel: (id, cb) => {
+    db.query(`SELECT * FROM ${table3} WHERE items_id=${id}`, (_err, result, _field) => {
+      cb(result)
+    })
+  },
+  updatePictureModel: (itemsId, url, cb) => {
+    db.query(`UPDATE ${table3} SET picture="${url}" WHERE items_id=${itemsId}`, (_err, result, _field) => {
       cb(result)
     })
   },
@@ -37,7 +52,7 @@ module.exports = {
     })
   },
   getItemModelByCondition: (obj1, obj2, sortKey, sortValue, num1, num2, cb) => {
-    db.query(`SELECT ${table}.id, ${table}.name, ${table}.price, ${table2}.category, ${table}.description FROM ${table} LEFT JOIN ${table2} ON ${table}.category_id = ${table2}.id WHERE ${obj1} LIKE '%${obj2}%' ORDER BY ${sortKey} ${sortValue} LIMIT ${num1} OFFSET ${num2}`, (_err, result, _field) => {
+    db.query(`SELECT ${table}.id, ${table}.name, ${table}.price, ${table2}.category, ${table3}.picture, ${table}.description, ${table}.updated_at FROM ${table} LEFT JOIN ${table2} ON ${table}.category_id = ${table2}.id LEFT JOIN ${table3} ON ${table}.id = ${table3}.items_id WHERE ${obj1} LIKE '%${obj2}%' ORDER BY ${sortKey} ${sortValue} LIMIT ${num1} OFFSET ${num2}`, (_err, result, _field) => {
       cb(result)
     })
   },
