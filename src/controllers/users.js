@@ -27,8 +27,9 @@ module.exports = {
     })
   },
   createNewUser: (req, res) => {
-    const { name, email } = req.body
-    createNewUserModel([name, email], result => {
+    const { name, email, password } = req.body
+    console.log(req.body)
+    createNewUserModel([name, email, password], result => {
       res.send({
         success: true,
         message: 'user created',
@@ -38,9 +39,9 @@ module.exports = {
   },
   changeUser: (req, res) => {
     const { id } = req.params
-    const { name, email } = req.body
-    if (name && email) {
-      changeUserModel(id, [name, email], result => {
+    const { name, email, password } = req.body
+    if (name && email && password) {
+      changeUserModel(id, [name, email, password], result => {
         res.send({
           success: true,
           message: `user ${id} has been updated`,

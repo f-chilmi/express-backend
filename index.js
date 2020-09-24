@@ -7,6 +7,7 @@ const itemsRouter = require('./src/routes/items')
 const categoryRouter = require('./src/routes/category')
 const cartRouter = require('./src/routes/cart')
 const usersRoute = require('./src/routes/users')
+const authRoute = require('./src/routes/auth')
 
 const app = express()
 
@@ -17,12 +18,13 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors())
 
 // middleware
-// const authMiddleware = require('./src/middleware/auth')
+const authMiddleware = require('./src/middleware/auth')
 
 app.use('/items', itemsRouter)
 app.use('/category', categoryRouter)
 app.use('/cart', cartRouter)
-app.use('/users', usersRoute)
+app.use('/users', authMiddleware, usersRoute)
+app.use('/auth', authRoute)
 
 app.listen(8080, () => {
   console.log('App listening on port 8080')
