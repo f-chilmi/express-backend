@@ -35,5 +35,10 @@ module.exports = {
     db.query(`SELECT * FROM ${table4} WHERE email="${email}" AND password="${password}"`, (_err, result, _field) => {
       cb(result)
     })
+  },
+  getUserByEmail: (email, cb) => {
+    db.query(`SELECT * FROM ${table4} WHERE email="${email}"`, (_err, result, _field) => {
+      cb(result)
+    })
   }
 }
