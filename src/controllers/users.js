@@ -30,6 +30,8 @@ module.exports = {
   },
   createNewUser: (req, res) => {
     const { name, email, password } = req.body
+    const { filename } = req.file
+    const urlPicture = `http://localhost:8080/uploads/${filename}`
     getUserByEmail(email, result => {
       if (result.length) {
         res.status(401).send({
@@ -39,14 +41,14 @@ module.exports = {
       } else {
         const salt = bcrypt.genSaltSync(10)
         const hashedPassword = bcrypt.hashSync(password, salt)
-        createNewUserModel([name, email, hashedPassword], _result => {
+        createNewUserModel([name, email, hashedPassword, urlPicture], _result => {
           console.log(result)
           res.send({
             success: true,
             message: 'user created',
             data: {
               ...req.body,
-              password: hashedPassword
+              picture: urlPicture
             }
           })
         })
@@ -56,18 +58,45 @@ module.exports = {
   changeUser: (req, res) => {
     const { id } = req.params
     const { name, email, password } = req.body
+    const { filename } = req.file
+    const urlPicture = `http://localhost:8080/uploads/${filename}`
+    const salt = bcrypt.genSaltSync(10)
+    const hashedPassword = bcrypt.hashSync(password, salt)
+
     if (name && email && password) {
-      const salt = bcrypt.genSaltSync(10)
-      const hashedPassword = bcrypt.hashSync(password, salt)
-      changeUserModel(id, [name, email, hashedPassword], _result => {
-        res.send({
-          success: true,
-          message: `user ${id} has been updated`,
-          data: {
-            ...req.body,
-            password: hashedPassword
+      getUserByEmail(email, result => {
+        if (result.length) {
+          if (!result[0].id == id) {
+            res.status(401).send({
+              success: false,
+              message: 'email already exist'
+            })
+          } else {
+            changeUserModel(id, [name, email, hashedPassword, urlPicture], _result => {
+              res.send({
+                success: true,
+                message: `user ${id} has been updated`,
+                data: {
+                  ...req.body,
+                  password: hashedPassword,
+                  picture: urlPicture
+                }
+              })
+            })
           }
-        })
+        } else {
+          changeUserModel(id, [name, email, hashedPassword, urlPicture], _result => {
+            res.send({
+              success: true,
+              message: `user ${id} has been updated`,
+              data: {
+                ...req.body,
+                password: hashedPassword,
+                picture: urlPicture
+              }
+            })
+          })
+        }
       })
     }
   },

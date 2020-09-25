@@ -22,7 +22,7 @@ module.exports = {
     })
   },
   addPictureModel: (id, url, cb) => {
-    db.query(`INSERT INTO ${table3} (items_id, picture) VALUE (${id}, "${url}")`, (_err, result, _field) => {
+    db.query(`INSERT INTO ${table3} (items_id, picture1) VALUE (${id}, "${url}")`, (_err, result, _field) => {
       cb(result)
     })
   },
@@ -37,7 +37,7 @@ module.exports = {
     })
   },
   updatePictureModel: (itemsId, url, cb) => {
-    db.query(`UPDATE ${table3} SET picture="${url}" WHERE items_id=${itemsId}`, (_err, result, _field) => {
+    db.query(`UPDATE ${table3} SET picture1="${url}" WHERE items_id=${itemsId}`, (_err, result, _field) => {
       cb(result)
     })
   },

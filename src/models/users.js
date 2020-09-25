@@ -17,12 +17,12 @@ module.exports = {
     })
   },
   createNewUserModel: (arr, cb) => {
-    db.query(`INSERT INTO ${table4} (name, email, password) VALUE ("${arr[0]}", "${arr[1]}", "${arr[2]}")`, (_err, result, _field) => {
+    db.query(`INSERT INTO ${table4} (name, email, password, urlPicture) VALUE ("${arr[0]}", "${arr[1]}", "${arr[2]}", "${arr[3]}")`, (_err, result, _field) => {
       cb(result)
     })
   },
   changeUserModel: (id, arr, cb) => {
-    db.query(`UPDATE ${table4} SET name="${arr[0]}", email="${arr[1]}", password="${arr[2]}" WHERE id=${id}`, (_err, result, _field) => {
+    db.query(`UPDATE ${table4} SET name="${arr[0]}", email="${arr[1]}", password="${arr[2]}", urlPicture="${arr[3]}" WHERE id=${id}`, (_err, result, _field) => {
       cb(result)
     })
   },

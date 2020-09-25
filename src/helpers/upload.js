@@ -10,7 +10,6 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const ext = file.originalname.split('.')[file.originalname.split('.').length - 1]
-    console.log(ext)
     const filename = new Date().getTime().toString().concat('.').concat(ext)
     cb(null, filename)
   }
