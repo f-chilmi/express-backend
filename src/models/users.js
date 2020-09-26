@@ -31,8 +31,8 @@ module.exports = {
       cb(result)
     })
   },
-  getUserByConditions: (email, password, cb) => {
-    db.query(`SELECT * FROM ${table4} WHERE email="${email}" AND password="${password}"`, (_err, result, _field) => {
+  getUserByConditions: (email, cb) => {
+    db.query(`SELECT * FROM ${table4} WHERE email="${email}"`, (_err, result, _field) => {
       cb(result)
     })
   },

@@ -38,7 +38,7 @@ module.exports = {
         const { insertId } = result
         req.files.map(i => {
           const filename = i.filename
-          const urlPicture = `http://localhost:8080/uploads/${filename}`
+          const urlPicture = `${process.env.APP_URL}uploads/${filename}`
           addPictureModel(insertId, urlPicture, result => {
             console.log(result)
             console.log(insertId)
@@ -62,8 +62,6 @@ module.exports = {
   changeItem: (req, res) => {
     const { id } = req.params
     const { name, price, description, category } = req.body
-    // const { filename } = req.file
-    // const urlPicture = `http://localhost:8080/uploads/${filename}`
     if (name.trim() && price && description && category) {
       getItemModel(id, result => {
         if (result.length) {
@@ -74,7 +72,7 @@ module.exports = {
               if (result.length) {
                 req.files.map(i => {
                   const filename = i.filename
-                  const urlPicture = `http://localhost:8080/uploads/${filename}`
+                  const urlPicture = `${process.env.APP_URL}uploads/${filename}`
                   updatePictureModel(id, urlPicture, result => {
                     console.log(result)
                     if (affectedRows) {
@@ -93,7 +91,7 @@ module.exports = {
               } else {
                 req.files.map(i => {
                   const filename = i.filename
-                  const urlPicture = `http://localhost:8080/uploads/${filename}`
+                  const urlPicture = `${process.env.APP_URL}uploads/${filename}`
                   addPictureModel(id, urlPicture, result => {
                     console.log(result)
                     if (affectedRows) {
@@ -129,7 +127,7 @@ module.exports = {
   updatePartial: (req, res) => {
     const { id } = req.params
     const { name, price, description, category_id } = req.body
-    if (name.trim() || price.trim() || description.trim() || category_id.trim() || urlPicture.trim()) {
+    if (name.trim() || price.trim() || description.trim() || category_id.trim()) {
       getItemModel(id, result => {
         if (result.length) {
           const data = Object.entries(req.body).map(item => {
@@ -137,42 +135,47 @@ module.exports = {
           })
           updatePartialModel(id, data, result => {
             const { affectedRows } = result
-            if (req.file) {
-              const { filename } = req.file
-              const urlPicture = `http://localhost:8080/uploads/${filename}`
-              console.log(req.file)
-              console.log(filename)
-              console.log(urlPicture)
+            if (req.files > 0) {
+              console.log(typeof req.files.length)
               getPictureByIdModel(id, result => {
+                // console.log(result)
                 if (result.length) {
-                  updatePictureModel(id, urlPicture, result => {
-                    console.log(result)
-                    if (affectedRows) {
-                      res.send({
-                        success: true,
-                        message: `Item ${id} has been updated`
-                      })
-                    } else {
-                      res.send({
-                        success: false,
-                        message: 'Failed update data'
-                      })
-                    }
+                  req.files.map(i => {
+                    const filename = i.filename
+                    const urlPicture = `${process.env.APP_URL}uploads/${filename}`
+                    updatePictureModel(id, urlPicture, result => {
+                      console.log(result)
+                      if (affectedRows) {
+                        res.send({
+                          success: true,
+                          message: `Item ${id} has been updated`
+                        })
+                      } else {
+                        res.send({
+                          success: false,
+                          message: 'Failed update data'
+                        })
+                      }
+                    })
                   })
                 } else {
-                  addPictureModel(id, urlPicture, result => {
-                    console.log(result)
-                    if (affectedRows) {
-                      res.send({
-                        success: true,
-                        message: `Item ${id} has been updated`
-                      })
-                    } else {
-                      res.send({
-                        success: false,
-                        message: 'Failed update data'
-                      })
-                    }
+                  req.files.map(i => {
+                    const filename = i.filename
+                    const urlPicture = `${process.env.APP_URL}uploads/${filename}`
+                    addPictureModel(id, urlPicture, result => {
+                      console.log(result)
+                      if (affectedRows) {
+                        res.send({
+                          success: true,
+                          message: `Item ${id} has been updated`
+                        })
+                      } else {
+                        res.send({
+                          success: false,
+                          message: 'Failed update data'
+                        })
+                      }
+                    })
                   })
                 }
               })
@@ -264,10 +267,10 @@ module.exports = {
           pageInfo.pages = Math.ceil(count / limit)
           const { pages, currentPage } = pageInfo
           if (currentPage < pages) {
-            pageInfo.nextLink = `http://localhost:8080/?${qs.stringify({ ...req.query, ...{ page: page + 1 } })}`
+            pageInfo.nextLink = `${process.env.APP_URL}?${qs.stringify({ ...req.query, ...{ page: page + 1 } })}`
           }
           if (currentPage > 1) {
-            pageInfo.prevLink = `http://localhost:8080/?${qs.stringify({ ...req.query, ...{ page: page - 1 } })}`
+            pageInfo.prevLink = `${process.env.APP_URL}?${qs.stringify({ ...req.query, ...{ page: page - 1 } })}`
           }
           res.send({
             success: true,

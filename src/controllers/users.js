@@ -31,7 +31,8 @@ module.exports = {
   createNewUser: (req, res) => {
     const { name, email, password } = req.body
     const { filename } = req.file
-    const urlPicture = `http://localhost:8080/uploads/${filename}`
+    const urlPicture = `${process.env.APP_URL}uploads/${filename}`
+    console.log(urlPicture)
     getUserByEmail(email, result => {
       if (result.length) {
         res.status(401).send({
@@ -48,6 +49,7 @@ module.exports = {
             message: 'user created',
             data: {
               ...req.body,
+              password: hashedPassword,
               picture: urlPicture
             }
           })
@@ -59,7 +61,7 @@ module.exports = {
     const { id } = req.params
     const { name, email, password } = req.body
     const { filename } = req.file
-    const urlPicture = `http://localhost:8080/uploads/${filename}`
+    const urlPicture = `${process.env.APP_URL}uploads/${filename}`
     const salt = bcrypt.genSaltSync(10)
     const hashedPassword = bcrypt.hashSync(password, salt)
 
