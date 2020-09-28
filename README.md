@@ -17,22 +17,27 @@ Blanja is simple e-commerce website focusing on back-end. Built with Node JS fra
 ## End Point
 **1. GET**
 
-* `/`(Get all list items)
-* `/:id` (Get detail item by id)
+* `/items`(Get all list items)
+* `/items/:id` (Get detail item by id)
+* `/users` (Get all list users using auth)
+* `/users/:id` (Get detail users by id using auth)
 
 **2. POST**
 
-* `/` (Post or create new item into database)
+* `/items` (Post or create new item into database using auth)
+* `/users` (Post or register new user)
 
 **3. PUT** 
 
-* `/:id` (Update or change all data item by id on database)
+* `/items/:id` (Update or change all data item by id on database using auth)
+* `/users/:id` (Update detail users by id using auth)
 
 **4. PATCH**
 
-* `/:id` (Update or change some datas by id on database)
+* `/items/:id` (Update or change some datas by id on database using auth)
 
 **5. DELETE**
 
-* `/:id` (Delete data item by id)
+* `/items/:id` (Delete data item by id using auth)
+* `/users/:id` (Delete data users by id using auth)
 

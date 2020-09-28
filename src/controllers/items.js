@@ -33,12 +33,15 @@ module.exports = {
   },
   createItem: (req, res) => {
     const { name, price, category, description } = req.body
-    if (name && price && category && description) {
+    // const { picture } = req.files
+    // console.log(req.files)
+    if (name && price && category && description & req.files.length) {
       createItemModel([name, price, category, description], result => {
         const { insertId } = result
         req.files.map(i => {
           const filename = i.filename
           const urlPicture = `${process.env.APP_URL}uploads/${filename}`
+          // dibuatkan async untuk addpicture
           addPictureModel(insertId, urlPicture, result => {
             console.log(result)
             console.log(insertId)
@@ -55,7 +58,7 @@ module.exports = {
     } else {
       res.status(400).send({
         success: false,
-        message: 'All field(name, price, category, description) must be filled'
+        message: 'All field(name, price, category, description, picture) must be filled'
       })
     }
   },

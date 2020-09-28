@@ -12,7 +12,7 @@ module.exports = {
       // console.log(password)
       if (result.length) {
         // console.log(bcrypt.compareSync(password, result[0].password))
-        if (bcrypt.compareSync(req.body.password, result[0].password)) {
+        if (bcrypt.compareSync(password, result[0].password)) {
           jwt.sign({ id: result[0].id }, process.env.APP_KEY, {
             expiresIn: '1 days'
           }, (_err, token) => {
