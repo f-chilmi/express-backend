@@ -22,5 +22,17 @@ module.exports = {
     db.query(query1, (_err, result, _field) => {
       cb(result)
     })
+  },
+  updateSellerModelPicture: (id, data, url, cb) => {
+    db.query(`UPDATE ${table6} SET ${data}, storeImg="${url}" WHERE id=${id}`, (_err, result, _field) => {
+      console.log(_err)
+      cb(result)
+    })
+  },
+  updateSellerModel: (id, data, cb) => {
+    db.query(`UPDATE ${table6} SET ${data} WHERE id=${id}`, (_err, result, _field) => {
+      console.log(_err)
+      cb(result)
+    })
   }
 }

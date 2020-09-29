@@ -81,7 +81,6 @@ module.exports = {
             })
           } else {
             changeUserModel(id, data, hashedPassword, urlPicture, birth, result => {
-              console.log(typeof birth)
               console.log(result)
               res.send({
                 success: true,
