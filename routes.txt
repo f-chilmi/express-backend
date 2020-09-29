@@ -1,0 +1,44 @@
+Route prep 29-09-2020
+
+A. LOGIN
+- POST  "/auth/login"
+- POST "/auth/signup"
+- POST "/auth/reset_password"
+- POST "/auth/confirm_password"
+
+B. HOME
+- GET "/items"
+
+C. CATEGORY
+- GET "/items/search[category]=id
+
+D. DETAIL ITEMS
+- GET "/items/:id
+
+E. CART
+- GET "/users/:id/cart"
+- PATCH "/users/:id/cart"
+
+F. CHECKOUT
+- GET "/users/:id/checkout"
+- GET "/users/:id/payments" (show payments method page)
+- POST "/users/:id/payments" (create new order"
+
+G. PROFILE USER
+- GET "/users/:id" (detail user)
+- PATCH "/users/:id" (edit detail user)
+- GET "/users/:id/address" (show address added)
+- PATCH "/users/:id/address/edit" (edit address)
+- POST "/users/:id/address/create" (create/add new address)
+- GET "/users/:id/order" (show all status order)
+- GET "/users/:id/order_canceled"
+
+H. PROFILE SELLER
+- GET "/seller/:id" (detail store)
+- POST "/seller" (create new profile store) (signup seller?)
+- PATCH "/seller/:id" (edit profile store)
+- GET "/seller/:id/product" (show all product by seller id)
+- GET "/seller/:id/product/:idP" (show detail product)
+- POST "/seller/:id" (create new product)
+- GET "/seller/:id/order"
+- GET "/seller/:id/order_canceled"

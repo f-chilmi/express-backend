@@ -3,6 +3,7 @@ const db = require('../helpers/db')
 // const table2 = 'category'
 // const table3 = 'items_picture'
 const table4 = 'users'
+const table5 = 'address_user'
 
 module.exports = {
   showAllUsersModel: (cb) => {
@@ -21,8 +22,8 @@ module.exports = {
       cb(result)
     })
   },
-  changeUserModel: (id, arr, cb) => {
-    db.query(`UPDATE ${table4} SET name="${arr[0]}", email="${arr[1]}", password="${arr[2]}", urlPicture="${arr[3]}" WHERE id=${id}`, (_err, result, _field) => {
+  changeUserModel: (id, arr, password, urlPicture, birth, cb) => {
+    db.query(`UPDATE ${table4} SET ${arr}, password="${password}", urlPicture="${urlPicture}", birth="${birth}" WHERE id=${id}`, (_err, result, _field) => {
       cb(result)
     })
   },
@@ -38,6 +39,21 @@ module.exports = {
   },
   getUserByEmail: (email, cb) => {
     db.query(`SELECT * FROM ${table4} WHERE email="${email}"`, (_err, result, _field) => {
+      cb(result)
+    })
+  },
+  addAddressModel: (id, nameAddress, recipientsName, recipientsPhone, address, postalCode, city, cb) => {
+    db.query(`INSERT INTO ${table5} (user_id, nameAddress, recipientsName, recipientsPhone, address, postalCode, city) VALUE (${id}, "${nameAddress}", "${recipientsName}", "${recipientsPhone}", "${address}", "${postalCode}", "${city}")`, (_err, result, _field) => {
+      cb(result)
+    })
+  },
+  showAddressModel: (id, cb) => {
+    db.query(`SELECT * FROM ${table5} WHERE user_id=${id}`, (_err, result, _field) => {
+      cb(result)
+    })
+  },
+  editAddressModel: (id, data, cb) => {
+    db.query(`UPDATE ${table5} SET ${data} WHERE user_id=${id}`, (_err, result, _field) => {
       cb(result)
     })
   }

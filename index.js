@@ -7,6 +7,7 @@ const itemsRouter = require('./src/routes/items')
 const categoryRouter = require('./src/routes/category')
 const cartRouter = require('./src/routes/cart')
 const usersRoute = require('./src/routes/users')
+const sellersRoute = require('./src/routes/sellers')
 const authRoute = require('./src/routes/auth')
 
 const app = express()
@@ -24,6 +25,7 @@ app.use('/items', itemsRouter)
 app.use('/category', categoryRouter)
 app.use('/cart', cartRouter)
 app.use('/users', authMiddleware, usersRoute)
+app.use('/sellers', authMiddleware, sellersRoute)
 app.use('/auth', authRoute)
 
 app.listen(8080, () => {
