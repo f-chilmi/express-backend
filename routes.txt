@@ -35,10 +35,10 @@ G. PROFILE USER
 
 H. PROFILE SELLER
 - GET "/seller/:id" (detail store)
-- POST "/seller" (create new profile store) (signup seller?)
+- POST "/seller" (create new profile store) 
 - PATCH "/seller/:id" (edit profile store)
 - GET "/seller/:id/product" (show all product by seller id)
-- GET "/seller/:id/product/:idP" (show detail product)
+- GET "/seller/:id/product/:id" (show detail product)
 - POST "/seller/:id" (create new product)
 - GET "/seller/:id/order"
 - GET "/seller/:id/order_canceled"

@@ -3,11 +3,13 @@ const {
 } = require('../models/sellers')
 
 module.exports = {
-  showDetailSeller: (_req, res) => {
-    showDetailSellerModel(result => {
+  showDetailSeller: (req, res) => {
+    const { id } = req.params
+    showDetailSellerModel(id, result => {
+      // const pass = result[0].password
       res.send({
         success: true,
-        message: 'List users',
+        message: 'Detail seller',
         data: result
       })
     })
