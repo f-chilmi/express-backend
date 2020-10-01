@@ -19,7 +19,7 @@ module.exports = {
       sortKey = 'id'
       sortValue = 'ASC'
     }
-    console.log(sortKey, sortValue)
+    // console.log(sortKey, sortValue)
 
     getItemsWithCategoryModel(searchKey, searchValue, sortKey, sortValue, result => {
       res.send({

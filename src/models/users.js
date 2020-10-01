@@ -56,5 +56,11 @@ module.exports = {
     db.query(`UPDATE ${table5} SET ${data} WHERE user_id=${id}`, (_err, result, _field) => {
       cb(result)
     })
+  },
+  showAddressPrimaryModel: (id, cb) => {
+    db.query(`SELECT * FROM ${table5} WHERE user_id=${id} AND isPrimary="true"`, (_err, result, _field) => {
+      // console.log(_err)
+      cb(result)
+    })
   }
 }

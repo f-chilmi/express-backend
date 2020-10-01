@@ -5,9 +5,12 @@ module.exports = (req, res, next) => {
   const { authorization } = req.headers
 
   if (authorization && authorization.startsWith('Bearer ')) {
-    const token = authorization.slice(7, authorization.length)
+    let token = authorization.slice(7, authorization.length)
     try {
-      if (jwt.verify(token, process.env.APP_KEY)) {
+      token = jwt.verify(token, process.env.APP_KEY)
+      if (token) {
+        // console.log(req.user = token)
+        req.user = token
         next()
       } else {
         res.status(401).send({

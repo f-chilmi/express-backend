@@ -12,7 +12,8 @@ const {
 const bcrypt = require('bcryptjs')
 
 module.exports = {
-  showAllUsers: (_req, res) => {
+  showAllUsers: (req, res) => {
+    // console.log(req.user)
     showAllUsersModel(result => {
       res.send({
         success: true,
@@ -22,7 +23,8 @@ module.exports = {
     })
   },
   getDetailUser: (req, res) => {
-    const { id } = req.params
+    // console.log(req.user)
+    const { id } = req.user
     showDetailUserModel(id, result => {
       res.send({
         success: true,
@@ -61,7 +63,7 @@ module.exports = {
     })
   },
   changeUser: (req, res) => {
-    const { id } = req.params
+    const { id } = req.user
     const { name, email, password, phone, gender, birth } = req.body
     const salt = bcrypt.genSaltSync(10)
     const hashedPassword = bcrypt.hashSync(password, salt)
@@ -110,7 +112,7 @@ module.exports = {
     }
   },
   addAddress: (req, res) => {
-    const { id } = req.params
+    const { id } = req.user
     const { nameAddress, recipientsName, recipientsPhone, address, postalCode, city } = req.body
     addAddressModel(id, nameAddress, recipientsName, recipientsPhone, address, postalCode, city, result => {
       console.log(req.body)
@@ -122,7 +124,7 @@ module.exports = {
     })
   },
   showAddress: (req, res) => {
-    const { id } = req.params
+    const { id } = req.user
     showAddressModel(id, result => {
       res.status(200).send({
         success: true,
@@ -131,7 +133,7 @@ module.exports = {
     })
   },
   editAddress: (req, res) => {
-    const { id } = req.params
+    const { id } = req.user
     // const { nameAddress, recipientsName, recipientsPhone, address, postalCode, city } = req.body
     const data = Object.entries(req.body).map(item => {
       return parseInt(item[1]) > 0 ? `${item[0]}=${item[1]}` : `${item[0]}="${item[1]}"`

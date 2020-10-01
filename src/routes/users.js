@@ -15,13 +15,13 @@ const router = Router()
 
 const uploadHelper = require('../helpers/upload')
 
-router.get('/', showAllUsers) // harusnya yg bisa akses ini adalah super admin
-router.get('/:id', getDetailUser)
+router.get('/showAll', showAllUsers) // hanya bisa diakses oleh super admin harusnya
+router.get('/', getDetailUser) // akses detail id dari token
 router.post('/', uploadHelper.single('picture'), createNewUser)
-router.patch('/:id', uploadHelper.single('picture'), changeUser)
-router.post('/:id/address/create', addAddress)
-router.get('/:id/address', showAddress)
-router.patch('/:id/address/edit', editAddress)
+router.patch('/', uploadHelper.single('picture'), changeUser)
+router.post('/address/create', addAddress)
+router.get('/address', showAddress)
+router.patch('/address/edit', editAddress)
 router.delete('/:id', deteleUser)
 
 module.exports = router

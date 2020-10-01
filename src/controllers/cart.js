@@ -2,9 +2,10 @@ const { addToCartModel, showCartListModel, updateQtyModel, deleteItemOnCartModel
 
 module.exports = {
   addToCart: (req, res) => {
+    const { id } = req.user
     const { itemsId, quantity } = req.body
     if (itemsId && quantity) {
-      addToCartModel([itemsId, quantity], result => {
+      addToCartModel([id, itemsId, quantity], result => {
         res.status(201).send({
           success: true,
           message: 'Item added to cart',
@@ -19,33 +20,38 @@ module.exports = {
     }
   },
   showCartList: (req, res) => {
-    showCartListModel(result => {
-      const total = result.map(item => item.price * item.quantity)
-
-      result = result.map(item => {
-        return {
-          ...item,
-          total: item.price * item.quantity
-        }
-      })
-
-      const add = (accumulator, currentValue) => accumulator + currentValue
-
-      const totalPrice = total.reduce(add)
-
-      res.status(201).send({
-        success: true,
-        message: 'Cart list',
-        data: result,
-        'total price': totalPrice
-      })
+    const { id } = req.user
+    showCartListModel(id, result => {
+      // console.log(result.length)
+      if (result.length) {
+        const total = result.map(item => item.price * item.quantity)
+        result = result.map(item => {
+          return {
+            ...item,
+            total: item.price * item.quantity
+          }
+        })
+        const add = (accumulator, currentValue) => accumulator + currentValue
+        const totalPrice = total.reduce(add)
+        res.status(201).send({
+          success: true,
+          message: 'Cart list',
+          data: result,
+          'total price': totalPrice
+        })
+      } else {
+        res.send({
+          success: true,
+          message: 'cart is empty'
+        })
+      }
     })
   },
   updateQty: (req, res) => {
     const { id } = req.params
     const { quantity } = req.body
     checkId(id, result => {
-      console.log(result)
+      // console.log(result)
       if (result.length) {
         updateQtyModel(id, quantity, result => {
           res.send({

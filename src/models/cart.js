@@ -4,12 +4,13 @@ const table2 = 'cart'
 
 module.exports = {
   addToCartModel: (arr, cb) => {
-    db.query(`INSERT INTO ${table2} (items_id, quantity) VALUES (${arr[0]}, ${arr[1]})`, (_err, result, field) => {
+    db.query(`INSERT INTO ${table2} (user_id, items_id, quantity) VALUES (${arr[0]}, ${arr[1]}, ${arr[2]})`, (_err, result, field) => {
       cb(result)
     })
   },
-  showCartListModel: (cb) => {
-    db.query(`SELECT ${table2}.id, ${table1}.name, ${table1}.price, ${table2}.quantity FROM ${table1} INNER JOIN ${table2} ON ${table1}.id = ${table2}.items_id`, (_err, result, field) => {
+  showCartListModel: (id, cb) => {
+    db.query(`SELECT ${table2}.id, ${table1}.name, ${table1}.price, ${table2}.quantity FROM ${table1} INNER JOIN ${table2} ON ${table1}.id = ${table2}.items_id WHERE user_id=${id}`, (_err, result, field) => {
+      // console.log(_err)
       cb(result, _err)
     })
   },

@@ -15,19 +15,23 @@ module.exports = {
   loginController: (req, res) => {
     const { email, password } = req.body
     getUserByConditions(email, result => {
-      // console.log(result[0].password)
       // console.log(password)
       if (result.length) {
         // console.log(bcrypt.compareSync(password, result[0].password))
+        const user = result[0]
+        console.log(user.id)
+
         if (bcrypt.compareSync(password, result[0].password)) {
-          jwt.sign({ id: result[0].id }, process.env.APP_KEY, {
-            expiresIn: '1 days'
-          }, (_err, token) => {
-            res.status(200).send({
-              success: true,
-              message: 'Login success!',
-              token: token
-            })
+          // jwt.sign({ id: user.id }, process.env.APP_KEY, {
+          //   expiresIn: '1 days'
+          // }
+          // , (_err, token) => {
+          const token = jwt.sign({ id: user.id }, process.env.APP_KEY, { expiresIn: '1 days' })
+          // console.log(token)
+          res.status(200).send({
+            success: true,
+            message: 'Login success!',
+            token: token
           })
         } else {
           res.status(400).send({

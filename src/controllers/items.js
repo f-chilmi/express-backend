@@ -225,14 +225,16 @@ module.exports = {
   },
   showAllItems: (req, res) => {
     let { page, limit, search, sort } = req.query
-    const searchKey = 'name'
+    let searchKey = ''
     let searchValue = ''
     let sortKey = ''
     let sortValue = ''
     if (typeof search === 'object') {
+      searchKey = Object.keys(search)[0]
       searchValue = Object.values(search)[0]
     } else {
-      searchValue = search || ''
+      searchKey = 'name'
+      searchValue = '' || search
     }
 
     if (typeof sort === 'object') {
@@ -254,6 +256,8 @@ module.exports = {
       page = parseInt(page)
     }
     const offset = (page - 1) * limit
+    // console.log(Object.values(search)[0])
+    // console.log(sortKey + sortValue)
     getItemModelByCondition(searchKey, searchValue, sortKey, sortValue, limit, offset, result => {
       const pageInfo = {
         count: 0,
@@ -265,6 +269,7 @@ module.exports = {
       }
       if (result.length) {
         getInfoItemsModel(searchKey, searchValue, data => {
+          // console.log(data)
           const { count } = data[0]
           pageInfo.count = count
           pageInfo.pages = Math.ceil(count / limit)

@@ -58,6 +58,7 @@ module.exports = {
   },
   getInfoItemsModel: (obj1, obj2, cb) => {
     db.query(`SELECT COUNT(*) AS count FROM ${table} WHERE ${obj1} LIKE '%${obj2}%'`, (_err, data, _field) => {
+      // console.log(_err)
       cb(data)
     })
   }
