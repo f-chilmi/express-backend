@@ -1,35 +1,35 @@
 Route prep 29-09-2020
 
 A. LOGIN
-- POST  "/auth/login"
-- POST "/auth/signup"
+- POST  "/auth/login" v
+- POST "/auth/signup" v
 - POST "/auth/reset_password"
 - POST "/auth/confirm_password"
 
 B. HOME
-- GET "/items"
+- GET "/items" v
 
 C. CATEGORY
-- GET "/items/search[category]=id
+- GET "/items/search[category]=id v
 
 D. DETAIL ITEMS
-- GET "/items/:id
+- GET "/items/:id v
 
 E. CART
-- GET "/users/:id/cart"
-- PATCH "/users/:id/cart"
+- GET "/users/:id/cart" v
+- PATCH "/users/:id/cart" v
 
 F. CHECKOUT
-- GET "/users/:id/checkout"
+- GET "/users/:id/checkout" v
 - GET "/users/:id/payments" (show payments method page)
 - POST "/users/:id/payments" (create new order"
 
 G. PROFILE USER
-- GET "/users/:id" (detail user)
-- PATCH "/users/:id" (edit detail user)
-- GET "/users/:id/address" (show address added)
-- PATCH "/users/:id/address/edit" (edit address)
-- POST "/users/:id/address/create" (create/add new address)
+- GET "/users/:id" (detail user) v
+- PATCH "/users/:id" (edit detail user) v
+- GET "/users/:id/address" (show address added) v
+- PATCH "/users/:id/address/edit" (edit address) v
+- POST "/users/:id/address/create" (create/add new address) v
 - GET "/users/:id/order" (show all status order)
 - GET "/users/:id/order_canceled"
 

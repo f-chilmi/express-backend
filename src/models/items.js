@@ -52,7 +52,11 @@ module.exports = {
     })
   },
   getItemModelByCondition: (obj1, obj2, sortKey, sortValue, num1, num2, cb) => {
-    db.query(`SELECT ${table}.id, ${table}.name, ${table}.price, ${table2}.category, ${table3}.picture1, ${table}.description, ${table}.updated_at FROM ${table} LEFT JOIN ${table2} ON ${table}.category_id = ${table2}.id LEFT JOIN ${table3} ON ${table}.id = ${table3}.items_id WHERE ${obj1} LIKE '%${obj2}%' ORDER BY ${sortKey} ${sortValue} LIMIT ${num1} OFFSET ${num2}`, (_err, result, _field) => {
+    const query1 = `SELECT ${table}.id, ${table}.name, ${table}.price, ${table2}.category, ${table3}.picture1, ${table}.description, ${table}.updated_at FROM ${table} LEFT JOIN ${table2} ON ${table}.category_id = ${table2}.id LEFT JOIN ${table3} ON ${table}.id = ${table3}.items_id WHERE ${obj1} LIKE '%${obj2}%' ORDER BY ${sortKey} ${sortValue} LIMIT ${num1} OFFSET ${num2}`
+    // const query2 = `select * from items WHERE ${obj1} LIKE '%${obj2}%' ORDER BY ${sortKey} ${sortValue} LIMIT ${num1} OFFSET ${num2}`
+    db.query(query1, (_err, result, _field) => {
+      // console.log(query2)
+      // console.log(_err)
       cb(result)
     })
   },

@@ -1,9 +1,10 @@
 const { Router } = require('express')
 
-const { showList } = require('../controllers/checkout')
+const { showList, showPayments } = require('../controllers/checkout')
 
 const router = Router()
 
 router.get('/', showList)
+router.get('/payments', showPayments)
 
 module.exports = router

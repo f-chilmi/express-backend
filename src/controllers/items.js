@@ -225,7 +225,7 @@ module.exports = {
   },
   showAllItems: (req, res) => {
     let { page, limit, search, sort } = req.query
-    let searchKey = ''
+    let searchKey = 'name'
     let searchValue = ''
     let sortKey = ''
     let sortValue = ''
@@ -233,8 +233,7 @@ module.exports = {
       searchKey = Object.keys(search)[0]
       searchValue = Object.values(search)[0]
     } else {
-      searchKey = 'name'
-      searchValue = '' || search
+      searchValue = search || ''
     }
 
     if (typeof sort === 'object') {
@@ -242,7 +241,7 @@ module.exports = {
       sortValue = Object.values(sort)[0]
     } else {
       sortKey = 'id'
-      sortValue = sort || ''
+      sortValue = sort || 'asc' || ''
     }
 
     if (!limit) {
@@ -267,6 +266,7 @@ module.exports = {
         nextLink: null,
         prevLink: null
       }
+      // console.log(result)
       if (result.length) {
         getInfoItemsModel(searchKey, searchValue, data => {
           // console.log(data)

@@ -4,6 +4,7 @@ const db = require('../helpers/db')
 // const table3 = 'items_picture'
 const table4 = 'users'
 const table5 = 'address_user'
+const table6 = 'saldo_user'
 
 module.exports = {
   showAllUsersModel: (cb) => {
@@ -60,6 +61,11 @@ module.exports = {
   showAddressPrimaryModel: (id, cb) => {
     db.query(`SELECT * FROM ${table5} WHERE user_id=${id} AND isPrimary="true"`, (_err, result, _field) => {
       // console.log(_err)
+      cb(result)
+    })
+  },
+  showSaldoUserModel: (id, cb) => {
+    db.query(`SELECT * FROM ${table6} WHERE user_id=${id}`, (_err, result, _field) => {
       cb(result)
     })
   }
