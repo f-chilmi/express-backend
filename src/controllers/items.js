@@ -10,18 +10,134 @@ const {
   getItem2Model,
   addPictureModel,
   updatePictureModel,
-  getPictureByIdModel
+  getPictureByIdModel,
+  averageRatingModel,
+  getItemSellerModel,
+  getItemBySellerModel
 } = require('../models/items')
 
 module.exports = {
+  updateItemsByIdSeller: (req, res) => {
+    const sellerId = req.user.id
+    // console.log(req.body)
+    const { id } = req.params
+    const { name, price, description, category_id } = req.body
+    if (name || price || description || category_id) {
+      getItemBySellerModel(sellerId, id, result => {
+        // console.log(result)
+        if (result.length) {
+          const data = Object.entries(req.body).map(item => {
+            return parseInt(item[1]) > 0 ? `${item[0]}=${item[1]}` : `${item[0]}='${item[1]}'`
+          })
+          updatePartialModel(id, data, result => {
+            const { affectedRows } = result
+            if (req.files > 0) {
+              console.log(typeof req.files.length)
+              getPictureByIdModel(id, result => {
+                // console.log(result)
+                if (result.length) {
+                  req.files.map(i => {
+                    const filename = i.filename
+                    const urlPicture = `${process.env.APP_URL}uploads/${filename}`
+                    updatePictureModel(id, urlPicture, result => {
+                      console.log(result)
+                      if (affectedRows) {
+                        res.send({
+                          success: true,
+                          message: `Item ${id} has been updated`
+                        })
+                      } else {
+                        res.send({
+                          success: false,
+                          message: 'Failed update data'
+                        })
+                      }
+                    })
+                  })
+                } else {
+                  req.files.map(i => {
+                    const filename = i.filename
+                    const urlPicture = `${process.env.APP_URL}uploads/${filename}`
+                    addPictureModel(id, urlPicture, result => {
+                      console.log(result)
+                      if (affectedRows) {
+                        res.send({
+                          success: true,
+                          message: `Item ${id} has been updated`
+                        })
+                      } else {
+                        res.send({
+                          success: false,
+                          message: 'Failed update data'
+                        })
+                      }
+                    })
+                  })
+                }
+              })
+            } else {
+              if (affectedRows) {
+                res.send({
+                  success: true,
+                  message: `Item ${id} has been updated`
+                })
+              } else {
+                res.send({
+                  success: false,
+                  message: 'Failed update data'
+                })
+              }
+            }
+          })
+        } else {
+          res.send({
+            success: false,
+            message: `Data id = ${id} not found`
+          })
+        }
+      })
+    }
+  },
+  getDetailByIdSeller: (req, res) => {
+    const { id } = req.user
+    getItemSellerModel(id, result => {
+      console.log(result.length)
+      if (result.length) {
+        // averageRatingModel(id, r => {
+        //   r = r.map(item => {
+        //     return {
+        //       ...result,
+        //       item
+        //     }
+        //   })
+        res.send({
+          success: true,
+          message: 'detail item',
+          data: result
+        })
+        // })
+      } else {
+        res.send({
+          success: false,
+          message: `Id ${id} not found`
+        })
+      }
+    })
+  },
   getDetailItem: (req, res) => {
     const { id } = req.params
     getItem2Model(id, result => {
       if (result.length) {
-        res.send({
-          success: true,
-          message: 'detail item',
-          data: result[0]
+        averageRatingModel(id, result2 => {
+          // console.log(result[0])
+          res.send({
+            success: true,
+            message: 'detail item',
+            data: {
+              ...result[0],
+              ...result2[0]
+            }
+          })
         })
       } else {
         res.send({
@@ -32,24 +148,26 @@ module.exports = {
     })
   },
   createItem: (req, res) => {
+    const { id } = req.user
     const { name, price, category, description } = req.body
     // const { picture } = req.files
-    // console.log(req.files)
-    if (name && price && category && description & req.files.length) {
-      createItemModel([name, price, category, description], result => {
+    console.log(name && price && category && description && (req.files.length > 0))
+    if (name && price && category && description && (req.files.length > 0)) {
+      createItemModel(id, [name, price, category, description], result => {
         const { insertId } = result
         req.files.map(i => {
           const filename = i.filename
           const urlPicture = `${process.env.APP_URL}uploads/${filename}`
           // dibuatkan async untuk addpicture
           addPictureModel(insertId, urlPicture, result => {
-            console.log(result)
-            console.log(insertId)
+            // console.log(result)
+            // console.log(insertId)
             res.status(201).send({
               success: true,
               message: 'Item has been created',
               data: {
-                ...req.body
+                ...req.body,
+                urlPicture
               }
             })
           })

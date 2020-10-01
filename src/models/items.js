@@ -2,11 +2,22 @@ const db = require('../helpers/db')
 const table = 'items'
 const table2 = 'category'
 const table3 = 'items_picture'
+// const table4 = 'users'
+// const table5 = 'address_user'
+// const table6 = 'saldo_user'
+const table7 = 'items_rating'
 
 module.exports = {
   getItemModel: (id, cb) => {
     const query1 = `SELECT * FROM ${table} WHERE id=${id}`
     db.query(query1, (_err, result, _field) => {
+      cb(result)
+    })
+  },
+  getItemBySellerModel: (sellerId, id, cb) => {
+    const query1 = `SELECT * FROM ${table} WHERE id=${id} AND seller_id=${sellerId}`
+    db.query(query1, (_err, result, _field) => {
+      // console.log(_err)
       cb(result)
     })
   },
@@ -16,8 +27,16 @@ module.exports = {
       cb(result)
     })
   },
-  createItemModel: (arr, cb) => {
-    db.query(`INSERT INTO ${table} (name, price, category_id, description) VALUE ("${arr[0]}", ${arr[1]}, ${arr[2]}, "${arr[3]}")`, (_err, result, _field) => {
+  getItemSellerModel: (id, cb) => {
+    // const query1 = `select * from items where seller_id = ${id}`
+    const query2 = `SELECT ${table}.id, ${table}.name, ${table}.price, ${table2}.category, ${table3}.picture1, ${table}.description FROM ${table} LEFT JOIN ${table2} ON ${table}.category_id = ${table2}.id LEFT JOIN ${table3} ON ${table}.id = ${table3}.items_id WHERE ${table}.seller_id = "${id}"`
+    db.query(query2, (_err, result, _field) => {
+      // console.log(query2)
+      cb(result)
+    })
+  },
+  createItemModel: (id, arr, cb) => {
+    db.query(`INSERT INTO ${table} (seller_id, name, price, category_id, description) VALUE (${id}, "${arr[0]}", ${arr[1]}, ${arr[2]}, "${arr[3]}")`, (_err, result, _field) => {
       cb(result)
     })
   },
@@ -64,6 +83,11 @@ module.exports = {
     db.query(`SELECT COUNT(*) AS count FROM ${table} WHERE ${obj1} LIKE '%${obj2}%'`, (_err, data, _field) => {
       // console.log(_err)
       cb(data)
+    })
+  },
+  averageRatingModel: (id, cb) => {
+    db.query(`SELECT AVG(rating) FROM ${table7} WHERE items_id=${id}`, (_err, result, _field) => {
+      cb(result)
     })
   }
 }
