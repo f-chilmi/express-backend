@@ -19,9 +19,9 @@ router.get('/showAll', showAllUsers) // hanya bisa diakses oleh super admin haru
 router.get('/', getDetailUser) // akses detail id dari token
 router.post('/', uploadHelper.single('picture'), createNewUser)
 router.patch('/', uploadHelper.single('picture'), changeUser)
-router.post('/address/create', addAddress)
+router.post('/address', addAddress)
 router.get('/address', showAddress)
 router.patch('/address/edit', editAddress)
-router.delete('/:id', deteleUser)
+router.delete('/', deteleUser)
 
 module.exports = router

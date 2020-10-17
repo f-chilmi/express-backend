@@ -7,7 +7,8 @@ const {
   getUserByEmail,
   addAddressModel,
   showAddressModel,
-  editAddressModel
+  editAddressModel,
+  changeUserModel2
 } = require('../models/users')
 const bcrypt = require('bcryptjs')
 
@@ -64,16 +65,14 @@ module.exports = {
   },
   changeUser: (req, res) => {
     const { id } = req.user
-    const { name, email, password, phone, gender, birth } = req.body
-    const salt = bcrypt.genSaltSync(10)
-    const hashedPassword = bcrypt.hashSync(password, salt)
-    const { filename } = req.file
-    const urlPicture = `${process.env.APP_URL}uploads/${filename}`
+    const { name, email, phone, gender, birth } = req.body
+    // const salt = bcrypt.genSaltSync(10)
+    // const hashedPassword = bcrypt.hashSync(password, salt)
     const data = Object.entries(req.body).map(item => {
       return parseInt(item[1]) > 0 ? `${item[0]}=${item[1]}` : `${item[0]}="${item[1]}"`
     })
 
-    if (name || email || password || phone || gender || birth) {
+    if (name || email || phone || gender || birth) {
       getUserByEmail(email, result => {
         if (result.length) {
           if (!result[0].id == id) {
@@ -82,31 +81,62 @@ module.exports = {
               message: 'email already exist'
             })
           } else {
-            changeUserModel(id, data, hashedPassword, urlPicture, birth, result => {
+            if (req.file == undefined) {
+              changeUserModel2(id, data, birth, result => {
+                res.send({
+                  success: true,
+                  message: `user ${id} has been updated`,
+                  data: {
+                    ...req.body
+                    // password: hashedPassword,
+                  }
+                })
+              })
+            } else {
+              const { filename } = req.file
+              const urlPicture = `${process.env.APP_URL}uploads/${filename}`
+              changeUserModel(id, data, urlPicture, birth, result => {
+                console.log(result)
+                res.send({
+                  success: true,
+                  message: `user ${id} has been updated`,
+                  data: {
+                    ...req.body,
+                    // password: hashedPassword,
+                    picture: urlPicture
+                  }
+                })
+              })
+            }
+          }
+        } else {
+          if (req.file == undefined) {
+            changeUserModel2(id, data, birth, result => {
+              res.send({
+                success: true,
+                message: `user ${id} has been updated`,
+                data: {
+                  ...req.body
+                  // password: hashedPassword,
+                }
+              })
+            })
+          } else {
+            const { filename } = req.file
+            const urlPicture = `${process.env.APP_URL}uploads/${filename}`
+            changeUserModel(id, data, urlPicture, birth, result => {
               console.log(result)
               res.send({
                 success: true,
                 message: `user ${id} has been updated`,
                 data: {
                   ...req.body,
-                  password: hashedPassword,
+                  // password: hashedPassword,
                   picture: urlPicture
                 }
               })
             })
           }
-        } else {
-          changeUserModel(id, data, hashedPassword, urlPicture, birth, result => {
-            res.send({
-              success: true,
-              message: `user ${id} has been updated`,
-              data: {
-                ...req.body,
-                password: hashedPassword,
-                picture: urlPicture
-              }
-            })
-          })
         }
       })
     }
@@ -147,7 +177,7 @@ module.exports = {
     })
   },
   deteleUser: (req, res) => {
-    const { id } = req.params
+    const { id } = req.user
     deleteUserModel(id, _result => {
       res.send({
         success: true,

@@ -1,6 +1,15 @@
-const { getItemsWithCategoryModel } = require('../models/category')
+const { getItemsWithCategoryModel, showCategoryModel } = require('../models/category')
 
 module.exports = {
+  showCategory: (req, res) => {
+    showCategoryModel(result => {
+      res.send({
+        success: true,
+        message: 'category list',
+        data: result
+      })
+    })
+  },
   showItemsWithCategory: (req, res) => {
     const { search, sort } = req.query
     const searchKey = 'category'

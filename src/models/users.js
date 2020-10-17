@@ -5,6 +5,7 @@ const db = require('../helpers/db')
 const table4 = 'users'
 const table5 = 'address_user'
 const table6 = 'saldo_user'
+const table7 = 'transaction'
 
 module.exports = {
   showAllUsersModel: (cb) => {
@@ -23,8 +24,13 @@ module.exports = {
       cb(result)
     })
   },
-  changeUserModel: (id, arr, password, urlPicture, birth, cb) => {
-    db.query(`UPDATE ${table4} SET ${arr}, password="${password}", urlPicture="${urlPicture}", birth="${birth}" WHERE id=${id}`, (_err, result, _field) => {
+  changeUserModel: (id, arr, urlPicture, birth, cb) => {
+    db.query(`UPDATE ${table4} SET ${arr}, urlPicture="${urlPicture}", birth="${birth}" WHERE id=${id}`, (_err, result, _field) => {
+      cb(result)
+    })
+  },
+  changeUserModel2: (id, arr, birth, cb) => {
+    db.query(`UPDATE ${table4} SET ${arr}, birth="${birth}" WHERE id=${id}`, (_err, result, _field) => {
       cb(result)
     })
   },
@@ -66,6 +72,12 @@ module.exports = {
   },
   showSaldoUserModel: (id, cb) => {
     db.query(`SELECT * FROM ${table6} WHERE user_id=${id}`, (_err, result, _field) => {
+      cb(result)
+    })
+  },
+  postNewOrderModel: (arr, cb) => {
+    db.query(`INSERT INTO ${table7} (user_id, items_id, name, price, category, picture, description) VALUE (${arr[0]}, ${arr[1]}, "${arr[2]}", ${arr[3]}, "${arr[4]}", "${arr[5]}", "${arr[6]}")`, (_err, result, _field) => {
+      console.log(_err)
       cb(result)
     })
   }

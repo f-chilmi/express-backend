@@ -6,7 +6,7 @@ const router = Router()
 
 router.post('/', addToCart)
 router.get('/', showCartList)
-router.patch('/:id', updateQty)
+router.patch('/', updateQty)
 router.delete('/:id', deleteItemOnCart)
 
 module.exports = router

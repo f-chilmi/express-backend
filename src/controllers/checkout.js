@@ -1,5 +1,5 @@
 const { showCartListModel } = require('../models/cart')
-const { showAddressPrimaryModel, showSaldoUserModel } = require('../models/users')
+const { showAddressPrimaryModel, showSaldoUserModel, postNewOrderModel } = require('../models/users')
 
 module.exports = {
   showList: (req, res) => {
@@ -19,7 +19,7 @@ module.exports = {
           const shippingCost = 10000
           const totalPrice = total.reduce(add)
           const totalAll = shippingCost + totalPrice
-          res.status(302).send({
+          res.status(200).send({
             success: true,
             message: 'Cart list',
             data: {
@@ -52,14 +52,14 @@ module.exports = {
         showSaldoUserModel(id, result => {
           // console.log(result[0].saldo)
           if (result[0].saldo > totalAll) {
-            res.status(302).send({
+            res.send({
               success: true,
               message: 'pay with blanjaCash',
               saldo: result[0].saldo,
               total: totalAll
             })
           } else {
-            res.status(302).send({
+            res.status(200).send({
               success: true,
               message: 'blanjaCash balance is not enough. top up now',
               saldo: result[0].saldo,
@@ -68,6 +68,23 @@ module.exports = {
           }
         })
       })
+    })
+  },
+  postNewOrder: (req, res) => {
+    const { id } = req.user
+    const { items_id } = req.body
+    // getItem2Model(id, result => {
+    //   const { name, price, category, picture, description } = result[0]
+    //   postNewOrderModel([id, items_id, name, price, category, picture, description], result2 => {
+    //     res.status(201).send({
+    //       success: true,
+    //       message: 'New transaction has made',
+    //       data: result
+    //     })
+    //   })
+    // })
+    showCartListModel(id, result => {
+      console.log(result)
     })
   }
 }

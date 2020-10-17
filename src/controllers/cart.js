@@ -1,16 +1,28 @@
-const { addToCartModel, showCartListModel, updateQtyModel, deleteItemOnCartModel, checkId } = require('../models/cart')
+const { addToCartModel, showCartListModel, updateQtyModel, deleteItemOnCartModel, checkId, checkItemsIdModel } = require('../models/cart')
 
 module.exports = {
   addToCart: (req, res) => {
     const { id } = req.user
     const { itemsId, quantity } = req.body
     if (itemsId && quantity) {
-      addToCartModel([id, itemsId, quantity], result => {
-        res.status(201).send({
-          success: true,
-          message: 'Item added to cart',
-          data: req.body
-        })
+      checkItemsIdModel(id, itemsId, result1 => {
+        if (result1.length > 0) {
+          const qtyUpdated = parseInt(quantity) + parseInt(result1[0].quantity)
+          updateQtyModel(id, itemsId, qtyUpdated, _result => {
+            res.send({
+              success: true,
+              message: `id ${id} has been updated on your cart`
+            })
+          })
+        } else {
+          addToCartModel([id, itemsId, quantity], _result => {
+            res.status(201).send({
+              success: true,
+              message: 'Item added to cart',
+              data: req.body
+            })
+          })
+        }
       })
     } else {
       res.send({
@@ -48,15 +60,14 @@ module.exports = {
     })
   },
   updateQty: (req, res) => {
-    const { id } = req.params
-    const { quantity } = req.body
-    checkId(id, result => {
-      // console.log(result)
+    const { id } = req.user
+    const { itemsId, quantity } = req.body
+    checkItemsIdModel(id, itemsId, result => {
       if (result.length) {
-        updateQtyModel(id, quantity, result => {
+        updateQtyModel(id, itemsId, quantity, _result => {
           res.send({
             success: true,
-            message: `id ${id} has been updated on your cart`
+            message: `id ${itemsId} has been updated on your cart`
           })
         })
       } else {
@@ -69,7 +80,7 @@ module.exports = {
   },
   deleteItemOnCart: (req, res) => {
     const { id } = req.params
-    deleteItemOnCartModel(id, result => {
+    deleteItemOnCartModel(id, _result => {
       res.send({
         success: true,
         message: `item ${id} has been deleted`

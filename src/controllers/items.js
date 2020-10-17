@@ -384,33 +384,37 @@ module.exports = {
         nextLink: null,
         prevLink: null
       }
-      // console.log(result)
-      if (result.length) {
-        getInfoItemsModel(searchKey, searchValue, data => {
-          // console.log(data)
-          const { count } = data[0]
-          pageInfo.count = count
-          pageInfo.pages = Math.ceil(count / limit)
-          const { pages, currentPage } = pageInfo
-          if (currentPage < pages) {
-            pageInfo.nextLink = `${process.env.APP_URL}?${qs.stringify({ ...req.query, ...{ page: page + 1 } })}`
-          }
-          if (currentPage > 1) {
-            pageInfo.prevLink = `${process.env.APP_URL}?${qs.stringify({ ...req.query, ...{ page: page - 1 } })}`
-          }
+      console.log(result === 'undefined')
+      if (result === 'undefined') {
+        console.log('waiting for the data')
+      } else {
+        if (result.length) {
+          getInfoItemsModel(searchKey, searchValue, data => {
+            // console.log(data)
+            const { count } = data[0]
+            pageInfo.count = count
+            pageInfo.pages = Math.ceil(count / limit)
+            const { pages, currentPage } = pageInfo
+            if (currentPage < pages) {
+              pageInfo.nextLink = `${process.env.APP_URL}?${qs.stringify({ ...req.query, ...{ page: page + 1 } })}`
+            }
+            if (currentPage > 1) {
+              pageInfo.prevLink = `${process.env.APP_URL}?${qs.stringify({ ...req.query, ...{ page: page - 1 } })}`
+            }
+            res.send({
+              success: true,
+              message: 'List of items',
+              info: result,
+              pageInfo
+            })
+          })
+        } else {
           res.send({
             success: true,
-            message: 'List of items',
-            info: result,
+            message: 'There is no item on list',
             pageInfo
           })
-        })
-      } else {
-        res.send({
-          success: true,
-          message: 'There is no item on list',
-          pageInfo
-        })
+        }
       }
     })
   }
