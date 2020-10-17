@@ -1,3 +1,4 @@
+const { error } = require('console')
 const qs = require('querystring')
 const {
   getItemModel,
@@ -384,37 +385,33 @@ module.exports = {
         nextLink: null,
         prevLink: null
       }
-      console.log(result === 'undefined')
-      if (result === 'undefined') {
-        console.log('waiting for the data')
-      } else {
-        if (result.length) {
-          getInfoItemsModel(searchKey, searchValue, data => {
-            // console.log(data)
-            const { count } = data[0]
-            pageInfo.count = count
-            pageInfo.pages = Math.ceil(count / limit)
-            const { pages, currentPage } = pageInfo
-            if (currentPage < pages) {
-              pageInfo.nextLink = `${process.env.APP_URL}?${qs.stringify({ ...req.query, ...{ page: page + 1 } })}`
-            }
-            if (currentPage > 1) {
-              pageInfo.prevLink = `${process.env.APP_URL}?${qs.stringify({ ...req.query, ...{ page: page - 1 } })}`
-            }
-            res.send({
-              success: true,
-              message: 'List of items',
-              info: result,
-              pageInfo
-            })
-          })
-        } else {
+      // console.log(result === 'undefined')
+      if (result) {
+        getInfoItemsModel(searchKey, searchValue, data => {
+          // console.log(data)
+          const { count } = data[0]
+          pageInfo.count = count
+          pageInfo.pages = Math.ceil(count / limit)
+          const { pages, currentPage } = pageInfo
+          if (currentPage < pages) {
+            pageInfo.nextLink = `${process.env.APP_URL}?${qs.stringify({ ...req.query, ...{ page: page + 1 } })}`
+          }
+          if (currentPage > 1) {
+            pageInfo.prevLink = `${process.env.APP_URL}?${qs.stringify({ ...req.query, ...{ page: page - 1 } })}`
+          }
           res.send({
             success: true,
-            message: 'There is no item on list',
+            message: 'List of items',
+            info: result,
             pageInfo
           })
-        }
+        })
+      } else {
+        res.send({
+          success: false,
+          message: 'There is no item on list',
+          pageInfo
+        })
       }
     })
   }

@@ -3,6 +3,7 @@ const { getItemsWithCategoryModel, showCategoryModel } = require('../models/cate
 module.exports = {
   showCategory: (req, res) => {
     showCategoryModel(result => {
+      console.log(result)
       res.send({
         success: true,
         message: 'category list',
