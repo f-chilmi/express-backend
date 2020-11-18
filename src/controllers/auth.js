@@ -139,5 +139,5 @@ module.exports = {
         message: 'all field must be filled'
       })
     }
-  }
+  },
 }

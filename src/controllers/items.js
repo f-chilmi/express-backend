@@ -161,8 +161,6 @@ module.exports = {
           const urlPicture = `${process.env.APP_URL}uploads/${filename}`
           // dibuatkan async untuk addpicture
           addPictureModel(insertId, urlPicture, result => {
-            // console.log(result)
-            // console.log(insertId)
             res.status(201).send({
               success: true,
               message: 'Item has been created',
@@ -364,7 +362,7 @@ module.exports = {
     }
 
     if (!limit) {
-      limit = 5
+      limit = 10
     } else {
       limit = parseInt(limit)
     }
@@ -394,10 +392,10 @@ module.exports = {
           pageInfo.pages = Math.ceil(count / limit)
           const { pages, currentPage } = pageInfo
           if (currentPage < pages) {
-            pageInfo.nextLink = `${process.env.APP_URL}?${qs.stringify({ ...req.query, ...{ page: page + 1 } })}`
+            pageInfo.nextLink = `${process.env.APP_URL}public?${qs.stringify({ ...req.query, ...{ page: page + 1 } })}`
           }
           if (currentPage > 1) {
-            pageInfo.prevLink = `${process.env.APP_URL}?${qs.stringify({ ...req.query, ...{ page: page - 1 } })}`
+            pageInfo.prevLink = `${process.env.APP_URL}public?${qs.stringify({ ...req.query, ...{ page: page - 1 } })}`
           }
           res.send({
             success: true,

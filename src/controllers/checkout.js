@@ -1,4 +1,4 @@
-const { showCartListModel } = require('../models/cart')
+const { showCartListModel, postNewTrxModel, postNewTrxDetailModel, getDataTrx } = require('../models/cart')
 const { showAddressPrimaryModel, showSaldoUserModel, postNewOrderModel } = require('../models/users')
 
 module.exports = {
@@ -72,19 +72,25 @@ module.exports = {
   },
   postNewOrder: (req, res) => {
     const { id } = req.user
-    const { items_id } = req.body
-    // getItem2Model(id, result => {
-    //   const { name, price, category, picture, description } = result[0]
-    //   postNewOrderModel([id, items_id, name, price, category, picture, description], result2 => {
-    //     res.status(201).send({
-    //       success: true,
-    //       message: 'New transaction has made',
-    //       data: result
-    //     })
-    //   })
-    // })
-    showCartListModel(id, result => {
-      console.log(result)
+    const {seller_id, items_id, name, quantity, price, total, picture} = req.body
+    postNewTrxModel(id, seller_id, result => {
+      const trx_id = result.insertId
+      postNewTrxDetailModel([trx_id, items_id, name, quantity, price, total, picture], result1 => {
+        res.status(200).send({
+          success: true,
+          message: 'success add trx',
+          result: req.body
+        })
+      })
+    })
+  },
+  showTrx: (req, res) => {
+    const { id } = req.user
+    getDataTrx(id, result => {
+      res.send({
+        result
+      })
     })
   }
+
 }

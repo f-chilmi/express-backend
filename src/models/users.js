@@ -26,11 +26,23 @@ module.exports = {
   },
   changeUserModel: (id, arr, urlPicture, birth, cb) => {
     db.query(`UPDATE ${table4} SET ${arr}, urlPicture="${urlPicture}", birth="${birth}" WHERE id=${id}`, (_err, result, _field) => {
+      console.log(_err)
+      cb(result)
+    })
+  },
+  changeUserImageModel: (id, urlPicture, cb) => {
+    db.query(`UPDATE ${table4} SET urlPicture="${urlPicture}" WHERE id=${id}`, (_err, result, _field) => {
+      console.log(_err)
       cb(result)
     })
   },
   changeUserModel2: (id, arr, birth, cb) => {
     db.query(`UPDATE ${table4} SET ${arr}, birth="${birth}" WHERE id=${id}`, (_err, result, _field) => {
+      cb(result)
+    })
+  },
+  changePasswordUser: (id, password, cb) => {
+    db.query(`UPDATE ${table4} SET password="${password}" WHERE id=${id}`, (_err, result, _field) => {
       cb(result)
     })
   },

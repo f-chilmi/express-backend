@@ -8,7 +8,9 @@ const {
   addAddressModel,
   showAddressModel,
   editAddressModel,
-  changeUserModel2
+  changeUserModel2,
+  changeUserImageModel,
+  changePasswordUser
 } = require('../models/users')
 const bcrypt = require('bcryptjs')
 
@@ -66,13 +68,25 @@ module.exports = {
   changeUser: (req, res) => {
     const { id } = req.user
     const { name, email, phone, gender, birth } = req.body
-    // const salt = bcrypt.genSaltSync(10)
-    // const hashedPassword = bcrypt.hashSync(password, salt)
     const data = Object.entries(req.body).map(item => {
       return parseInt(item[1]) > 0 ? `${item[0]}=${item[1]}` : `${item[0]}="${item[1]}"`
     })
-
-    if (name || email || phone || gender || birth) {
+    if (req.file !== undefined) {
+      const { filename } = req.file
+      const urlPicture = `uploads/${filename}`
+      changeUserImageModel(id, urlPicture, result => {
+        console.log(result)
+        res.send({
+          success: true,
+          message: `user ${id} has been updated`,
+          data: {
+            ...req.body,
+            // password: hashedPassword,
+            picture: urlPicture
+          }
+        })
+      })
+    } else {
       getUserByEmail(email, result => {
         if (result.length) {
           if (!result[0].id == id) {
@@ -138,6 +152,36 @@ module.exports = {
             })
           }
         }
+      })
+    }
+  },
+  changePassword: (req, res) => {
+    const { id } = req.user
+    const { oldPassword, newPassword, confirmNewPassword } = req.body
+    if (newPassword === confirmNewPassword) {
+      showDetailUserModel(id, result => {
+        console.log(result[0].password)
+        if (bcrypt.compareSync(oldPassword, result[0].password)) {
+          const salt = bcrypt.genSaltSync(10)
+          const hashedPassword = bcrypt.hashSync(newPassword, salt)
+          changePasswordUser(id, hashedPassword, result => {
+            console.log(result)
+            res.status(200).send({
+              success: true,
+              message: 'Success change password'
+            })
+          })
+        } else {
+          res.status(400).send({
+            success: false,
+            message: 'Wrong password'
+          })
+        }
+      })
+    } else {
+      res.status(400).send({
+        success: false,
+        message: 'Type password confirmation correctly'
       })
     }
   },

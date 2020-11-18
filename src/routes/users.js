@@ -8,6 +8,7 @@ const {
   addAddress,
   showAddress,
   editAddress,
+  changePassword,
   deteleUser
 } = require('../controllers/users')
 
@@ -22,6 +23,7 @@ router.patch('/', uploadHelper.single('picture'), changeUser)
 router.post('/address', addAddress)
 router.get('/address', showAddress)
 router.patch('/address/edit', editAddress)
+router.patch('/password', changePassword)
 router.delete('/', deteleUser)
 
 module.exports = router
